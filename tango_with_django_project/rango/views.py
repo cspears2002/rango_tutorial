@@ -4,7 +4,8 @@ from django.shortcuts import render
 
 def index(request):
   context_dict = {'boldmessage': 'I am bold font from the context.'}
-  return render(request,'rango/index.html', context_dict)
+  return render(request, 'rango/index.html', context_dict)
 
 def about(request):
-  return HttpResponse("Rango says here is the about page. <a href='/rango/'>Index</a>")
+  context_dict = {'boldmessage': 'here is the about page'}
+  return render(request, 'rango/about.html', context_dict)
