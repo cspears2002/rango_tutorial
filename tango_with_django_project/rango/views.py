@@ -6,6 +6,7 @@ from rango.models import Category
 from rango.models import Page
 
 from rango.forms import CategoryForm
+from rango.forms import PageForm
 
 def remove_spaces(category_list):
   for category in category_list:
@@ -35,7 +36,9 @@ def about(request):
 def category(request, category_name_url):
   category_name = remove_underscores(category_name_url)
 
-  context_dict = {'category_name': category_name}
+  context_dict = {}
+  context_dict['category_name'] = category_name
+  context_dict['category_name_url'] = category_name_url
 
   try:
     category = Category.objects.get(name=category_name)
@@ -52,7 +55,7 @@ def category(request, category_name_url):
 def add_category(request):
   if request.method == 'POST':
     form = CategoryForm(request.POST)
-    
+
     if form.is_valid():
       form.save(commit=True)
       return index(request)
@@ -62,3 +65,34 @@ def add_category(request):
     form = CategoryForm()
 
   return render(request, 'rango/add_category.html', {'form': form})
+
+def add_page(request, category_name_url):
+  category_name = remove_underscores(category_name_url)
+
+  if request.method == 'POST':
+    form = PageForm(request.POST)
+
+    if form.is_valid():
+      page = form.save(commit=False)
+
+      try:
+        cat = Category.objects.get(name=category_name)
+        page.category = cat
+      except Category.DoesNotExist:
+        return render(request, 'rango/add_page.html', {})
+
+      page.views = 0
+
+      page.save()
+
+      return category(request, category_name_url)
+    else:
+      print form.errors
+  else:
+    form = PageForm()
+
+  return render(request, 'rango/add_page.html',
+    {'category_name_url': category_name_url,
+     'category_name': category_name,
+     'form': form})
+
