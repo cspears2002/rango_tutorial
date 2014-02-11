@@ -5,14 +5,21 @@ from django.shortcuts import render
 from rango.models import Category
 from rango.models import Page
 
+def remove_spaces(category_list):
+  for category in category_list:
+    category.url = category.name.replace(' ', '_')
+  return category_list
+
+def remove_underscores(category_name_url):
+  category_name = category_name_url.replace('_', ' ')
+  return category_name
+
 def index(request):
   context_dict = {}
 
   category_list = Category.objects.order_by('-likes')[:5]
+  category_list = remove_spaces(category_list)
   context_dict['categories'] = category_list
-
-  for category in category_list:
-    category.url = category.name.replace(' ', '_')
 
   page_list = Page.objects.order_by('-views')[:5]
   context_dict['pages'] = page_list
@@ -24,7 +31,7 @@ def about(request):
   return render(request, 'rango/about.html', context_dict)
 
 def category(request, category_name_url):
-  category_name = category_name_url.replace('_', ' ')
+  category_name = remove_underscores(category_name_url)
 
   context_dict = {'category_name': category_name}
 
