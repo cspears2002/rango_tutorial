@@ -50,9 +50,9 @@ def category(request, category_name_url):
   return render(request, 'rango/category.html', context_dict)
 
 def add_category(request):
-  if request.method = 'POST':
+  if request.method == 'POST':
     form = CategoryForm(request.POST)
-
+    
     if form.is_valid():
       form.save(commit=True)
       return index(request)
