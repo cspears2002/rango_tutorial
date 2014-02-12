@@ -2,11 +2,9 @@ from django.http import HttpResponse
 from django.template import RequestContext
 from django.shortcuts import render
 
-from rango.models import Category
-from rango.models import Page
+from rango.models import Category, Page
 
-from rango.forms import CategoryForm
-from rango.forms import PageForm
+from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm
 
 def remove_spaces(category_list):
   for category in category_list:
