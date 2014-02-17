@@ -128,3 +128,23 @@ def register(request):
     'rango/register.html',
     {'user_form': user_form, 'profile_form': profile_form, 'registered': registered})
 
+def user_login(request):
+
+  if request.method == 'POST':
+    username = request.POST['username']
+    password = request.POST['password']
+
+    user = authenticate(username=username, password=password)
+
+    if user is not None:
+      if user.is_active:
+        login(request, user)
+        return HttpResponseRedirect('/rango/')
+      else:
+        return HttpResponse("Your Rango account is disabled.")
+    else:
+      print "Invalid login details: {0}, {1}".format(username, password)
+      return HttpResponse("Invalid login details provided.")
+
+  else:
+    return render(request, 'rango/login.html', {})
